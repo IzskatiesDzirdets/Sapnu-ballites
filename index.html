@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sapņu Ballītes — Bērnu ballītes & Zina Nezina</title>
+    <meta name="description" content="Sapņu Ballītes — Premium bērnu ballītes Latvijā. 10+ gadu pieredze. Profesionāli animatori. Rezervē savu sapņu ballīti!">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        :root {
+            --pink:    #FF6FB7;
+            --pink-light: #FFB3D9;
+            --purple:  #9B59B6;
+            --purple-light: #C39BD3;
+            --yellow:  #FFD93D;
+            --yellow-light: #FFF3B0;
+            --teal:    #1ABC9C;
+            --dark:    #2C1654;
+            --white:   #FFFBFE;
+            --gray:    #F4EFFA;
+            --text:    #3D2065;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--white);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* ── FLOATING BUBBLES ── */
+        .bubbles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.12;
+            animation: floatBubble linear infinite;
+        }
+        @keyframes floatBubble {
+            0%   { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            10%  { opacity: 0.12; }
+            90%  { opacity: 0.12; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,254,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 2px solid var(--pink-light);
+            transition: all 0.3s;
+        }
+        nav.scrolled {
+            box-shadow: 0 4px 30px rgba(155,89,182,0.15);
+        }
+        .nav-logo {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--dark);
+            text-decoration: none;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            background: var(--pink-light);
+            color: var(--purple);
+        }
+        .nav-cta {
+            background: linear-gradient(135deg, var(--pink), var(--purple)) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(255,111,183,0.4);
+        }
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255,111,183,0.5) !important;
+            background: linear-gradient(135deg, var(--purple), var(--pink)) !important;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(160deg, #FFF0F9 0%, #F0E6FF 50%, #FFF9E6 100%);
+            padding-top: 80px;
+        }
+        .hero-bg-shapes {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .hero-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--yellow);
+            color: var(--dark);
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 0.9rem;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            margin-bottom: 1.5rem;
+            animation: badgePop 0.6s ease both;
+            box-shadow: 0 4px 15px rgba(255,217,61,0.4);
+            letter-spacing: 1px;
+        }
+        @keyframes badgePop {
+            from { opacity: 0; transform: scale(0.8) translateY(10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .hero h1 {
+            font-family: 'Baloo 2', cursive;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            animation: heroIn 0.8s ease 0.2s both;
+        }
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .hero h1 .pink { color: var(--pink); }
+        .hero h1 .purple { color: var(--purple); }
+        .hero-sub {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--purple);
+            margin-bottom: 0.8rem;
+            animation: heroIn 0.8s ease 0.35s both;
+            font-weight: 600;
+        }
+        .hero-desc {
+            font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+            color: #5a4070;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.7;
+            animation: heroIn 0.8s ease 0.5s both;
+        }
+        .hero-stars {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            animation: heroIn 0.8s ease 0.6s both;
+        }
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: heroIn 0.8s ease 0.7s both;
+        }
+        .btn-primary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 25px rgba(255,111,183,0.4);
+            letter-spacing: 0.5px;
+        }
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(255,111,183,0.5);
+        }
+        .btn-secondary {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: white;
+            color: var(--purple);
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            text-decoration: none;
+            border: 2px solid var(--purple-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            background: var(--gray);
+            transform: translateY(-4px);
+            border-color: var(--purple);
+        }
+        .hero-scroll {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 2;
+            background: white;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(155,89,182,0.2);
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50%       { transform: translateX(-50%) translateY(8px); }
+        }
+        .hero-floaties {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .floaty {
+            position: absolute;
+            font-size: 2.5rem;
+            animation: floaty ease-in-out infinite;
+            opacity: 0.7;
+        }
+        @keyframes floaty {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%       { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        /* ── STATS ── */
+        .stats {
+            background: linear-gradient(135deg, var(--purple), var(--dark));
+            padding: 3rem 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .stat-item .num {
+            font-family: 'Baloo 2', cursive;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--yellow);
+            line-height: 1;
+        }
+        .stat-item .lbl {
+            color: rgba(255,255,255,0.85);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ── SECTIONS ── */
+        section { position: relative; z-index: 1; }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-tag {
+            display: inline-block;
+            background: var(--yellow-light);
+            color: var(--purple);
+            font-weight: 700;
+            font-size: 0.85rem;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .section-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1.2;
+        }
+        .section-title .accent { color: var(--pink); }
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: #6a5080;
+            margin-top: 0.8rem;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* ── SERVICES ── */
+        .services {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .service-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            box-shadow: 0 4px 20px rgba(155,89,182,0.08);
+        }
+        .service-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--pink-light), var(--purple-light));
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--pink-light);
+            box-shadow: 0 20px 40px rgba(255,111,183,0.2);
+        }
+        .service-card:hover::before { opacity: 0.08; }
+        .service-emoji {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        .service-card h3 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .service-card p {
+            color: #6a5080;
+            line-height: 1.7;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1.5rem;
+        }
+        .service-btn {
+            display: inline-block;
+            padding: 0.6rem 1.8rem;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            border-radius: 50px;
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+        .service-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(255,111,183,0.4);
+        }
+
+        /* ── ZINA NEZINA ── */
+        .zina {
+            padding: 5rem 2rem;
+            background: linear-gradient(160deg, #F0E6FF, #FFF0F9);
+        }
+        .zina-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .zina-visual {
+            position: relative;
+        }
+        .zina-card {
+            background: white;
+            border-radius: 30px;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(155,89,182,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .zina-card::before {
+            content: '';
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, var(--pink-light), transparent);
+            border-radius: 50%;
+        }
+        .zina-big-emoji {
+            font-size: 6rem;
+            display: block;
+            margin-bottom: 1rem;
+            animation: floaty 3s ease-in-out infinite;
+        }
+        .zina-card h3 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--purple);
+        }
+        .zina-card .zina-price {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.8rem;
+            color: var(--pink);
+            font-weight: 800;
+            margin: 0.5rem 0;
+        }
+        .zina-text h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .zina-text p {
+            color: #5a4070;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+        .zina-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+        .zina-features li {
+            padding: 0.5rem 0;
+            color: var(--dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .zina-features li::before {
+            content: '✨';
+            font-size: 1rem;
+        }
+
+        /* ── TESTIMONIALS ── */
+        .testimonials {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .testimonial-card {
+            background: linear-gradient(135deg, #FFF0F9, #F5EEFF);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+            border: 2px solid var(--pink-light);
+            transition: all 0.3s;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255,111,183,0.15);
+        }
+        .testimonial-stars {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        .testimonial-text {
+            font-style: italic;
+            color: #5a4070;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+        .testimonial-author {
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+            color: var(--purple);
+        }
+        .quote-mark {
+            position: absolute;
+            top: 1.2rem; right: 1.5rem;
+            font-size: 4rem;
+            color: var(--pink-light);
+            font-family: serif;
+            line-height: 1;
+        }
+
+        /* ── BOOKING ── */
+        .booking {
+            padding: 5rem 2rem;
+            background: linear-gradient(160deg, #F0E6FF 0%, #FFF0F9 100%);
+        }
+        .booking-wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Calendar & Form (React) */
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .booking-panel {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(155,89,182,0.1);
+        }
+        .panel-title {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        /* Calendar */
+        .cal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .cal-nav {
+            background: var(--gray);
+            border: none;
+            border-radius: 50%;
+            width: 36px; height: 36px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cal-nav:hover { background: var(--pink-light); }
+        .cal-month {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .cal-day-hdr {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--purple-light);
+            padding: 0.4rem 0;
+            text-transform: uppercase;
+        }
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.85rem;
+            border: 2px solid transparent;
+            min-height: 40px;
+        }
+        .cal-day.empty { background: none; cursor: default; }
+        .cal-day.past { opacity: 0.3; cursor: not-allowed; }
+        .cal-day.disabled { background: #f5f5f5; opacity: 0.4; cursor: not-allowed; }
+        .cal-day.available {
+            background: var(--yellow-light);
+            border-color: var(--yellow);
+            color: var(--dark);
+        }
+        .cal-day.available:hover {
+            background: var(--yellow);
+            transform: scale(1.1);
+        }
+        .cal-day.fully-booked {
+            background: rgba(255,111,183,0.12);
+            border-color: var(--pink-light);
+            color: var(--pink);
+        }
+        .cal-day.selected {
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            border-color: transparent;
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(255,111,183,0.4);
+        }
+        .cal-dots {
+            display: flex;
+            gap: 2px;
+            margin-top: 2px;
+        }
+        .cal-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--teal);
+        }
+        .cal-dot.booked { background: var(--pink); }
+        /* Form */
+        .form-group { margin-bottom: 1rem; }
+        .form-label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--dark);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            color: var(--dark);
+            transition: border-color 0.2s;
+            background: white;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--pink);
+        }
+        .form-textarea { min-height: 80px; resize: vertical; }
+        .theme-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+        }
+        .theme-option {
+            padding: 0.6rem 0.8rem;
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            color: var(--dark);
+        }
+        .theme-option:hover { border-color: var(--pink-light); }
+        .theme-option.selected {
+            border-color: var(--pink);
+            background: rgba(255,111,183,0.1);
+            color: var(--purple);
+        }
+        .host-option {
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--gray);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .host-option:hover { border-color: var(--pink-light); }
+        .host-option.selected {
+            border-color: var(--pink);
+            background: rgba(255,111,183,0.08);
+        }
+        .host-avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink-light), var(--purple-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .host-info .host-name {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        .host-info .host-spec {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+            margin-top: 0.5rem;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255,111,183,0.4);
+        }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .success-box {
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .success-box h2 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .legend {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #6a5080;
+        }
+        .legend-dot {
+            width: 14px; height: 14px;
+            border-radius: 4px;
+        }
+        .error-box {
+            background: rgba(255,111,183,0.1);
+            border: 2px solid var(--pink);
+            border-radius: 12px;
+            padding: 1rem;
+            color: var(--pink);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .info-chip {
+            background: var(--yellow-light);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            font-size: 0.88rem;
+            color: var(--dark);
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            border-left: 4px solid var(--yellow);
+        }
+        .selected-date-chip {
+            background: linear-gradient(135deg, rgba(255,111,183,0.1), rgba(155,89,182,0.1));
+            border: 2px solid var(--pink-light);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            color: var(--purple);
+            font-size: 0.95rem;
+        }
+        .spinner {
+            display: inline-block;
+            width: 18px; height: 18px;
+            border: 3px solid rgba(255,255,255,0.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            vertical-align: middle;
+            margin-right: 0.5rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── CONTACT ── */
+        .contact {
+            padding: 5rem 2rem;
+            background: var(--white);
+        }
+        .contact-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .contact-ico {
+            width: 52px; height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--pink-light), var(--purple-light));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .contact-item h3 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.3rem;
+        }
+        .contact-item p, .contact-item a {
+            color: #6a5080;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .contact-item a:hover { color: var(--pink); }
+        .social-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            background: var(--gray);
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .social-btn:hover {
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            transform: translateY(-2px);
+        }
+        .price-box {
+            background: linear-gradient(135deg, #FFF0F9, #F0E6FF);
+            border-radius: 24px;
+            padding: 2.5rem;
+            border: 2px solid var(--pink-light);
+        }
+        .price-box h3 {
+            font-family: 'Baloo 2', cursive;
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        .price-big {
+            font-family: 'Baloo 2', cursive;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--pink);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--dark);
+            color: rgba(255,255,255,0.8);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        .footer-logo {
+            font-family: 'Baloo 2', cursive;
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--pink), var(--yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .footer-links a:hover { color: var(--pink); }
+        .footer-copy {
+            font-size: 0.85rem;
+            opacity: 0.5;
+            margin-top: 1rem;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .zina-inner { grid-template-columns: 1fr; gap: 2rem; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .booking-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            nav { padding: 0.8rem 1rem; }
+            .nav-links { display: none; }
+            .hero h1 { font-size: clamp(2.5rem, 10vw, 4rem); }
+            .floaty { font-size: 1.8rem; }
+            .theme-options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Floating bubbles -->
+<div class="bubbles" id="bubbles"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+    <a href="#home" class="nav-logo">🎈 Sapņu Ballītes</a>
+    <ul class="nav-links">
+        <li><a href="#home">Sākums / Home</a></li>
+        <li><a href="#services">Ballītes / Parties</a></li>
+        <li><a href="#zina">Zina Nezina</a></li>
+        <li><a href="#booking">Rezervēt / Book</a></li>
+        <li><a href="#contact" class="nav-cta">Kontakti</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+    <div class="hero-bg-shapes">
+        <div class="hero-shape" style="width:500px;height:500px;background:var(--pink);top:-100px;right:-100px;"></div>
+        <div class="hero-shape" style="width:400px;height:400px;background:var(--purple);bottom:-50px;left:-100px;"></div>
+        <div class="hero-shape" style="width:300px;height:300px;background:var(--yellow);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+    </div>
+    <div class="hero-floaties">
+        <span class="floaty" style="top:15%;left:8%;animation-duration:4s;animation-delay:0s;">🎈</span>
+        <span class="floaty" style="top:20%;right:10%;animation-duration:5s;animation-delay:1s;">🎉</span>
+        <span class="floaty" style="bottom:25%;left:12%;animation-duration:6s;animation-delay:0.5s;">🎂</span>
+        <span class="floaty" style="bottom:30%;right:8%;animation-duration:4.5s;animation-delay:1.5s;">⭐</span>
+        <span class="floaty" style="top:60%;left:5%;animation-duration:5.5s;animation-delay:0.8s;">🦄</span>
+        <span class="floaty" style="top:40%;right:5%;animation-duration:4s;animation-delay:2s;">🎊</span>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge">⭐ JAU 10 GADUS LATVIJĀ • SINCE 2015 ⭐</div>
+        <h1>
+            <span class="pink">Sapņu</span><br>
+            <span class="purple">Ballītes</span>
+        </h1>
+        <p class="hero-sub">Bērnu ballītes & Zina Nezina mājvieta</p>
+        <p class="hero-desc">
+            Tā nav tikai dzimšanas diena — tas ir piedzīvojums, kas kļūs par Jūsu bērna spilgtāko bērnības atmiņu. Premium līmeņa svētki ģimenēm, kuras vēlas ko patiesi īpašu.
+        </p>
+        <div class="hero-stars">⭐⭐⭐⭐⭐ Mūs iesaka simtiem laimīgu ģimeņu</div>
+        <div class="hero-btns">
+            <a href="#booking" class="btn-primary">🎈 Rezervēt ballīti / Book now</a>
+            <a href="#services" class="btn-secondary">Uzzināt vairāk ↓</a>
+        </div>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('stats').scrollIntoView({behavior:'smooth'})">↓</div>
+</section>
+
+<!-- STATS -->
+<div class="stats" id="stats">
+    <div class="stats-grid">
+        <div class="stat-item"><div class="num">10+</div><div class="lbl">Gadu pieredze / Years</div></div>
+        <div class="stat-item"><div class="num">500+</div><div class="lbl">Laimīgas ģimenes / Families</div></div>
+        <div class="stat-item"><div class="num">100%</div><div class="lbl">Prieks guaranteed</div></div>
+        <div class="stat-item"><div class="num">⭐5.0</div><div class="lbl">Vērtējums / Rating</div></div>
+    </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+    <div class="section-header">
+        <div class="section-tag">🎉 Mūsu pakalpojumi / Our services</div>
+        <h2 class="section-title">Ballītes ar <span class="accent">raksturu</span></h2>
+        <p class="section-subtitle">Katrs pasākums tiek radīts unikāls — tieši Jūsu bērnam un Jūsu sapnim.</p>
+    </div>
+    <div class="services-grid">
+        <div class="service-card">
+            <span class="service-emoji">🦄</span>
+            <h3>Dzimšanas dienas ballītes</h3>
+            <p>Personalizētas tēmas, profesionāli animatori, spēles un aktivitātes visiem vecumiem. Jūsu bērna sapnis — mūsu misija.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+        <div class="service-card">
+            <span class="service-emoji">🏫</span>
+            <h3>Skolas & bērnudārza pasākumi</h3>
+            <p>Interaktīvas programmas grupām — dzimšanas dienas, gada noslēguma ballītes, tematiski pasākumi klasei vai grupai.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+        <div class="service-card">
+            <span class="service-emoji">🎭</span>
+            <h3>Tematiskās ballītes</h3>
+            <p>No supervaroņiem līdz pasakām — mēs radām pilnīgu tematisko pieredzi ar kostīmiem, dekorācijām un programmu.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+        <div class="service-card">
+            <span class="service-emoji">🏠</span>
+            <h3>Ballītes mājās / At home</h3>
+            <p>Mēs atbraucam pie Jums! Animatori, rekvizīti un viss nepieciešamais — Jūs tikai sagaidāt viesus.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+        <div class="service-card">
+            <span class="service-emoji">🎪</span>
+            <h3>Premium pakotne</h3>
+            <p>Viss iekļauts — telpa, dekorācijas, kūka, animatori, foto. Jūs varat pilnībā atpūsties un baudīt svētkus kopā ar bērnu.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+        <div class="service-card">
+            <span class="service-emoji">🎨</span>
+            <h3>Radošās darbnīcas</h3>
+            <p>Mākslas, rokdarbu vai kulinārijas darbnīcas bērniem. Aizraujošas, izglītojošas un radošas aktivitātes grupām.</p>
+            <button class="service-btn" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">Rezervēt / Book</button>
+        </div>
+    </div>
+</section>
+
+<!-- ZINA NEZINA -->
+<section class="zina" id="zina">
+    <div class="zina-inner">
+        <div class="zina-visual">
+            <div class="zina-card">
+                <span class="zina-big-emoji">🌟</span>
+                <h3>Zina Nezina</h3>
+                <p style="color:#6a5080;margin:0.8rem 0;">1. sezona — iepriekšpasūtījums</p>
+                <div class="zina-price">€19.99</div>
+                <a href="https://payhip.com/b/cQEbd" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;margin-top:1rem;">
+                    📺 Pasūtīt / Order
+                </a>
+            </div>
+        </div>
+        <div class="zina-text">
+            <div class="section-tag">✨ Jauns projekts / New project</div>
+            <h2>Iepazīsties ar <span style="color:var(--pink)">Zinu!</span></h2>
+            <p>
+                "Zina Nezina" ir jauns, sirdssilts mini sēriju seriāls bērniem, kas māca drosmi, draudzību un pasaules izziņu. Šis ir 100% Latvijā radīts projekts.
+            </p>
+            <p>
+                Veicot iepriekšpasūtījumu šodien, Jūs palīdzat mums pabeigt tā veidošanu un saņemsiet visu 1. sezonu savā e-pastā, tiklīdz tā būs gatava.
+            </p>
+            <ul class="zina-features">
+                <li>100% Latvijā radīts / Made in Latvia</li>
+                <li>Māca drosmi un draudzību</li>
+                <li>Visas epizodes e-pastā pēc iznākšanas</li>
+                <li>Atbalsti vietējo radošumu</li>
+            </ul>
+            <a href="https://payhip.com/b/cQEbd" target="_blank" rel="noopener" class="btn-primary">
+                📺 Iepriekšpasūtīt 1. sezonu →
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+    <div class="section-header">
+        <div class="section-tag">💬 Atsauksmes / Reviews</div>
+        <h2 class="section-title">Ko saka <span class="accent">vecāki</span></h2>
+    </div>
+    <div class="testimonials-grid">
+        <div class="testimonial-card">
+            <div class="quote-mark">"</div>
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testimonial-text">No sirds vēlamies pateikties par burvīgo atmosfēru! Tāds prieks un sajūsma bērnu acīs — to nevar aprakstīt vārdos. Paldies no visas sirds!</p>
+            <div class="testimonial-author">🌸 Laimīga mamma</div>
+        </div>
+        <div class="testimonial-card">
+            <div class="quote-mark">"</div>
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testimonial-text">Elza bija vienkārši brīnišķīga – tik patiesa, sirsnīga un iedvesmojoša. Bērni viņu burtiski dievināja, un arī vecāki bija aizkustināti.</p>
+            <div class="testimonial-author">🌸 Emīlijas ģimene</div>
+        </div>
+        <div class="testimonial-card">
+            <div class="quote-mark">"</div>
+            <div class="testimonial-stars">⭐⭐⭐⭐⭐</div>
+            <p class="testimonial-text">Šie svētki bija tik īpaši tieši Jūsu dēļ. Tas ir vislabākais ieguldījums bērnu priekā! Vienmēr ieteikšu Jūs tālāk un noteikti tiksimies vēl.</p>
+            <div class="testimonial-author">🌸 Mārtipa un Kristīne</div>
+        </div>
+    </div>
+</section>
+
+<!-- BOOKING -->
+<section class="booking" id="booking">
+    <div class="booking-wrapper">
+        <div class="section-header">
+            <div class="section-tag">📅 Rezervācija / Booking</div>
+            <h2 class="section-title">Rezervē savu <span class="accent">sapņu ballīti</span></h2>
+            <p class="section-subtitle">Izvēlies datumu, animatoru un ballītes tēmu — mēs parūpēsimies par visu pārējo!</p>
+        </div>
+        <div id="booking-app"></div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+    <div class="section-header">
+        <div class="section-tag">📞 Kontakti / Contact</div>
+        <h2 class="section-title">Sazinies <span class="accent">ar mums</span></h2>
+    </div>
+    <div class="contact-grid">
+        <div>
+            <div class="contact-item">
+                <div class="contact-ico">📱</div>
+                <div>
+                    <h3>WhatsApp / Telefons</h3>
+                    <a href="https://wa.me/37124551994">+371 24551994</a>
+                    <p style="font-size:0.85rem;margin-top:0.3rem;color:#aaa;">Ātrākā atbilde WhatsApp</p>
+                </div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-ico">📧</div>
+                <div>
+                    <h3>E-pasts / Email</h3>
+                    <span id="email-txt" style="color:var(--pink);font-weight:700;">info&#64;sapnuballites&#46;com</span>
+                    <button onclick="var e='info'+'@'+'sapnuballites.com';navigator.clipboard.writeText(e).then(function(){var b=document.getElementById('copy-email');b.textContent='✅ Nokopēts!';setTimeout(function(){b.textContent='📋 Kopēt';},2000);})" id="copy-email" style="margin-left:0.8rem;background:var(--gray);border:none;padding:0.3rem 0.8rem;border-radius:20px;cursor:pointer;font-weight:700;font-size:0.8rem;color:var(--dark);">📋 Kopēt</button>
+                </div>
+            </div>
+            <div class="contact-item">
+                <div class="contact-ico">💬</div>
+                <div>
+                    <h3>Sociālie tīkli</h3>
+                    <div class="social-row" style="margin-top:0.5rem;">
+                        <a href="https://www.instagram.com/sapnuballites/" target="_blank" rel="noopener" class="social-btn">📸 Instagram</a>
+                        <a href="https://www.tiktok.com/@sapnuballites" target="_blank" rel="noopener" class="social-btn">🎵 TikTok</a>
+                        <a href="https://www.youtube.com/@sapnuballites" target="_blank" rel="noopener" class="social-btn">▶️ YouTube</a>
+                        <a href="https://www.facebook.com/sapnuballites" target="_blank" rel="noopener" class="social-btn">📘 Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="price-box">
+            <h3>💰 Cenas / Pricing</h3>
+            <span class="price-big">No €99</span>
+            <p style="color:#6a5080;line-height:1.7;margin-bottom:1.5rem;">Katrs pasākums ir unikāls. Cena atkarīga no pakotnes, dalībnieku skaita un papildu pakalpojumiem. Sazinieties, lai saņemtu personalizētu piedāvājumu!</p>
+            <a href="https://wa.me/37124551994" target="_blank" rel="noopener" class="btn-primary" style="display:inline-block;text-decoration:none;">
+                💬 Jautāt cenu / Ask price
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <span class="footer-logo">🎈 Sapņu Ballītes</span>
+    <div class="footer-links">
+        <a href="#home">Sākums</a>
+        <a href="#services">Ballītes</a>
+        <a href="#zina">Zina Nezina</a>
+        <a href="#booking">Rezervēt</a>
+        <a href="#contact">Kontakti</a>
+        <a href="https://wa.me/37124551994" target="_blank">WhatsApp</a>
+    </div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;">
+        © 2026 Sapņu Ballītes. Radīts ar ❤️ Latvijā. Bērnības skaistākās atmiņas.
+    </p>
+</footer>
+
+<!-- BUBBLES JS -->
+<script>
+    const bubbleContainer = document.getElementById('bubbles');
+    const colors = ['#FF6FB7','#9B59B6','#FFD93D','#1ABC9C','#C39BD3','#FFB3D9'];
+    for (let i = 0; i < 18; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble';
+        const size = 40 + Math.random() * 120;
+        b.style.cssText = `
+            width:${size}px;height:${size}px;
+            left:${Math.random()*100}%;
+            background:${colors[Math.floor(Math.random()*colors.length)]};
+            animation-duration:${10+Math.random()*20}s;
+            animation-delay:${Math.random()*15}s;
+        `;
+        bubbleContainer.appendChild(b);
+    }
+
+    window.addEventListener('scroll', () => {
+        const nav = document.getElementById('main-nav');
+        nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+</script>
+
+<!-- REACT BOOKING -->
+<script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const THEMES = [
+        { id: 'unicorn', emoji: '🦄', name: 'Vienradzis / Unicorn' },
+        { id: 'superhero', emoji: '🦸', name: 'Supervaronis / Superhero' },
+        { id: 'princess', emoji: '👸', name: 'Princese / Princess' },
+        { id: 'dino', emoji: '🦕', name: 'Dinozauri / Dinosaurs' },
+        { id: 'space', emoji: '🚀', name: 'Kosmoss / Space' },
+        { id: 'jungle', emoji: '🌿', name: 'Džungļi / Jungle' },
+        { id: 'ocean', emoji: '🐠', name: 'Okeāns / Ocean' },
+        { id: 'custom', emoji: '✨', name: 'Cita tēma / Custom' },
+    ];
+
+    const ANIMATORS = [
+        { id: 1, name: 'Elza', emoji: '👸', spec: 'Pasakas & princeses', available: true },
+        { id: 2, name: 'Mārtiņš', emoji: '🦸', spec: 'Supervaroņi & sports', available: true },
+        { id: 3, name: 'Zina', emoji: '⭐', spec: 'Zina Nezina programma', available: true },
+        { id: 4, name: 'Jebkurš', emoji: '🎉', spec: 'Labākais pieejamais', available: true },
+    ];
+
+    const CONFIG = {
+        minDays: 3,
+        maxDays: 120,
+    };
+
+    const MOCK_BOOKED = {};
+
+    function getDateStr(date) {
+        return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    }
+
+    function BookingApp() {
+        const [step, setStep] = useState(1);
+        const [currentDate, setCurrentDate] = useState(new Date());
+        const [selectedDate, setSelectedDate] = useState(null);
+        const [selectedTheme, setSelectedTheme] = useState(null);
+        const [selectedAnimator, setSelectedAnimator] = useState(null);
+        const [form, setForm] = useState({ name:'', email:'', phone:'', guests: 15, notes:'' });
+        const [submitting, setSubmitting] = useState(false);
+        const [success, setSuccess] = useState(false);
+        const [error, setError] = useState(null);
+
+        const isDateAvailable = (day) => {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const date = new Date(year, month, day);
+            const today = new Date(); today.setHours(0,0,0,0);
+            const min = new Date(today); min.setDate(min.getDate() + CONFIG.minDays);
+            const max = new Date(today); max.setDate(max.getDate() + CONFIG.maxDays);
+            if (date < min || date > max) return false;
+            const ds = getDateStr(date);
+            if (MOCK_BOOKED[ds] && MOCK_BOOKED[ds] >= 3) return false;
+            return true;
+        };
+
+        const getDaysInfo = () => {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            let startDow = firstDay.getDay();
+            startDow = startDow === 0 ? 6 : startDow - 1;
+            return { days: lastDay.getDate(), startDow };
+        };
+
+        const handleSubmit = async () => {
+            setSubmitting(true);
+            setError(null);
+            try {
+                if (!selectedDate) throw new Error('Lūdzu izvēlieties datumu!');
+                if (!selectedTheme) throw new Error('Lūdzu izvēlieties tēmu!');
+                if (!selectedAnimator) throw new Error('Lūdzu izvēlieties animatoru!');
+                if (!form.name || !form.email || !form.phone) throw new Error('Lūdzu aizpildiet visus obligātos laukus!');
+
+                await new Promise(r => setTimeout(r, 1200));
+                setSuccess(true);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setSubmitting(false);
+            }
+        };
+
+        if (success) {
+            return (
+                <div className="success-box">
+                    <div style={{fontSize:'4rem',marginBottom:'1rem'}}>🎉</div>
+                    <h2>Paldies, {form.name}!</h2>
+                    <p style={{fontSize:'1.1rem',marginBottom:'1rem',opacity:0.9}}>
+                        Jūsu rezervācija ir saņemta! Mēs sazināsimies ar Jums tuvākajā laikā.
+                    </p>
+                    <p style={{opacity:0.8,marginBottom:'2rem'}}>
+                        📅 {selectedDate} &nbsp;|&nbsp; {THEMES.find(t=>t.id===selectedTheme)?.emoji} {THEMES.find(t=>t.id===selectedTheme)?.name}
+                        &nbsp;|&nbsp; {ANIMATORS.find(a=>a.id===selectedAnimator)?.emoji} {ANIMATORS.find(a=>a.id===selectedAnimator)?.name}
+                    </p>
+                    <p style={{fontSize:'0.9rem',opacity:0.7,marginBottom:'1.5rem'}}>
+                        Apstiprinājums nosūtīts uz: {form.email}
+                    </p>
+                    <button className="btn-secondary" onClick={() => { setSuccess(false); setSelectedDate(null); setSelectedTheme(null); setSelectedAnimator(null); setForm({name:'',email:'',phone:'',guests:15,notes:''}); setStep(1); }} style={{background:'rgba(255,255,255,0.2)',border:'2px solid rgba(255,255,255,0.4)',color:'white'}}>
+                        Jauna rezervācija / New booking
+                    </button>
+                </div>
+            );
+        }
+
+        const { days, startDow } = getDaysInfo();
+
+        return (
+            <div className="booking-grid">
+                {/* LEFT - Calendar + Theme + Animator */}
+                <div style={{display:'flex',flexDirection:'column',gap:'1.5rem'}}>
+                    {/* Calendar */}
+                    <div className="booking-panel">
+                        <div className="panel-title">📅 Izvēlies datumu / Pick a date</div>
+                        <div className="cal-header">
+                            <button className="cal-nav" onClick={() => { const d=new Date(currentDate); d.setMonth(d.getMonth()-1); setCurrentDate(d); }}>‹</button>
+                            <div className="cal-month">{currentDate.toLocaleDateString('lv-LV',{month:'long',year:'numeric'})}</div>
+                            <button className="cal-nav" onClick={() => { const d=new Date(currentDate); d.setMonth(d.getMonth()+1); setCurrentDate(d); }}>›</button>
+                        </div>
+                        <div className="cal-grid">
+                            {['Pr','Ot','Tr','Ce','Pk','Se','Sv'].map(d => <div key={d} className="cal-day-hdr">{d}</div>)}
+                            {Array(startDow).fill(null).map((_,i) => <div key={`e${i}`} className="cal-day empty"></div>)}
+                            {Array(days).fill(null).map((_,i) => {
+                                const day = i+1;
+                                const year = currentDate.getFullYear();
+                                const month = currentDate.getMonth();
+                                const date = new Date(year,month,day);
+                                const today = new Date(); today.setHours(0,0,0,0);
+                                const isPast = date < today;
+                                const avail = isDateAvailable(day);
+                                const ds = getDateStr(date);
+                                const isSel = selectedDate === ds;
+                                let cls = 'cal-day';
+                                if (isPast) cls += ' past';
+                                else if (isSel) cls += ' selected';
+                                else if (avail) cls += ' available';
+                                else cls += ' disabled';
+
+                                return (
+                                    <div key={day} className={cls} onClick={() => {
+                                        if (!isPast && avail) { setSelectedDate(ds); setStep(s=>Math.max(s,2)); }
+                                    }}>
+                                        <div>{day}</div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        <div className="legend">
+                            <div className="legend-item"><div className="legend-dot" style={{background:'#FFD93D',border:'2px solid #FFD93D'}}></div>Pieejams</div>
+                            <div className="legend-item"><div className="legend-dot" style={{background:'linear-gradient(135deg,#FF6FB7,#9B59B6)'}}></div>Izvēlēts</div>
+                        </div>
+                    </div>
+
+                    {/* Theme */}
+                    <div className="booking-panel">
+                        <div className="panel-title">🎨 Ballītes tēma / Party theme</div>
+                        <div className="theme-options">
+                            {THEMES.map(t => (
+                                <div key={t.id} className={`theme-option ${selectedTheme===t.id?'selected':''}`}
+                                    onClick={() => { setSelectedTheme(t.id); setStep(s=>Math.max(s,3)); }}>
+                                    {t.emoji} {t.name}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Animator */}
+                    <div className="booking-panel">
+                        <div className="panel-title">🎭 Animators / Animator</div>
+                        {ANIMATORS.map(a => (
+                            <div key={a.id} className={`host-option ${selectedAnimator===a.id?'selected':''}`}
+                                onClick={() => { setSelectedAnimator(a.id); setStep(s=>Math.max(s,4)); }}>
+                                <div className="host-avatar">{a.emoji}</div>
+                                <div className="host-info">
+                                    <div className="host-name">{a.name}</div>
+                                    <div className="host-spec">{a.spec}</div>
+                                </div>
+                                {selectedAnimator===a.id && <span style={{marginLeft:'auto',color:'var(--pink)',fontSize:'1.2rem'}}>✓</span>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* RIGHT - Form */}
+                <div className="booking-panel">
+                    <div className="panel-title">📝 Kontaktinfo / Contact</div>
+
+                    {selectedDate && (
+                        <div className="selected-date-chip">
+                            📅 {selectedDate}
+                            {selectedTheme && ` · ${THEMES.find(t=>t.id===selectedTheme)?.emoji} ${THEMES.find(t=>t.id===selectedTheme)?.name.split('/')[0]}`}
+                            {selectedAnimator && ` · ${ANIMATORS.find(a=>a.id===selectedAnimator)?.emoji} ${ANIMATORS.find(a=>a.id===selectedAnimator)?.name}`}
+                        </div>
+                    )}
+
+                    {!selectedDate && (
+                        <div className="info-chip">👆 Sāc ar datuma izvēli kreisajā pusē!</div>
+                    )}
+
+                    {error && <div className="error-box">❌ {error}</div>}
+
+                    <div className="form-group">
+                        <label className="form-label">Vārds / Uzvārds *</label>
+                        <input type="text" className="form-input" value={form.name}
+                            onChange={e=>setForm({...form,name:e.target.value})} placeholder="Jūsu vārds..." required />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">E-pasts *</label>
+                        <input type="email" className="form-input" value={form.email}
+                            onChange={e=>setForm({...form,email:e.target.value})} placeholder="epasts@gmail.com" required />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Telefons *</label>
+                        <input type="tel" className="form-input" value={form.phone}
+                            onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+371 2XXXXXXX" required />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Bērnu skaits / Nr. of children</label>
+                        <input type="number" className="form-input" value={form.guests} min="1" max="100"
+                            onChange={e=>setForm({...form,guests:e.target.value})} />
+                    </div>
+                    <div className="form-group">
+                        <label className="form-label">Papildu vēlmes / Notes</label>
+                        <textarea className="form-textarea" value={form.notes}
+                            onChange={e=>setForm({...form,notes:e.target.value})}
+                            placeholder="Bērna vecums, īpašas vēlmes, alerģijas..."></textarea>
+                    </div>
+
+                    <button className="submit-btn"
+                        onClick={handleSubmit}
+                        disabled={submitting || !selectedDate || !selectedTheme || !selectedAnimator}>
+                        {submitting
+                            ? <><span className="spinner"></span>Apstrādā...</>
+                            : '🎈 Nosūtīt rezervāciju / Submit'}
+                    </button>
+
+                    <p style={{fontSize:'0.8rem',color:'#aaa',textAlign:'center',marginTop:'0.8rem'}}>
+                        Mēs sazināsimies 24 stundu laikā · We'll contact you within 24h
+                    </p>
+                </div>
+            </div>
+        );
+    }
+
+    ReactDOM.render(<BookingApp />, document.getElementById('booking-app'));
+</script>
+
+</body>
+</html>
