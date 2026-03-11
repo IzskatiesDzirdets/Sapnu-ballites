@@ -44,8 +44,26 @@
         .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:80px;padding-bottom:90px;transition:background 1.2s ease;}
         .hero-blobs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
         .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;transition:background 1.2s ease;}
-        #hero-canvas{position:absolute;inset:0;pointer-events:all;z-index:1;cursor:pointer;width:100%;height:100%;}
-        .hero-content{position:relative;z-index:2;text-align:center;padding:2rem;max-width:820px;}
+        /* Canvas behind content but catches clicks only in empty areas via JS */
+        #hero-canvas{position:absolute;inset:0;pointer-events:none;z-index:1;width:100%;height:100%;}
+        /* Hero content sits ABOVE canvas, text never obscured */
+        .hero-content{position:relative;z-index:4;text-align:center;padding:2rem;max-width:820px;pointer-events:none;}
+        .hero-content a,.hero-content button,.logo-wrap{pointer-events:all;}
+        /* Mode switcher — floats right side, not dead center */
+        .mode-btn{
+            position:absolute; right:5%; top:50%; transform:translateY(-50%);
+            z-index:5; cursor:pointer;
+            background:rgba(255,255,255,.18); backdrop-filter:blur(10px);
+            border:2px solid rgba(255,255,255,.4); border-radius:20px;
+            padding:.7rem 1rem; display:flex; flex-direction:column;
+            align-items:center; gap:.3rem; transition:all .3s;
+            box-shadow:0 4px 20px rgba(155,89,182,.2);
+        }
+        .mode-btn:hover{background:rgba(255,255,255,.32); transform:translateY(-50%) scale(1.05);}
+        .mode-btn-emoji{font-size:1.8rem; display:block; line-height:1;}
+        .mode-btn-lbl{font-family:'Fredoka',sans-serif; font-size:.7rem; font-weight:700;
+            color:var(--dark); letter-spacing:.5px; text-align:center; max-width:70px; line-height:1.2;}
+        @media(max-width:768px){.mode-btn{right:2%;padding:.5rem .7rem;}.mode-btn-emoji{font-size:1.4rem;}}
         .hero-badge{display:inline-block;background:var(--yellow);color:var(--dark);font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;padding:.4rem 1.2rem;border-radius:50px;margin-bottom:1.2rem;box-shadow:0 4px 15px rgba(255,217,61,.4);letter-spacing:1px;animation:popIn .6s ease both;}
         @keyframes popIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
         .logo-wrap{display:inline-block;cursor:pointer;margin-bottom:.8rem;animation:floatLogo 4s ease-in-out infinite;position:relative;}
@@ -254,6 +272,12 @@
         </div>
     </div>
 
+    <!-- Mode switcher button — right side, not center -->
+    <div class="mode-btn" id="mode-btn" onclick="nextMode()">
+        <span class="mode-btn-emoji" id="mode-btn-emoji">🎊</span>
+        <span class="mode-btn-lbl" id="mode-btn-lbl">Nākamais režīms</span>
+    </div>
+
     <!-- Stats pinned to bottom of hero — always visible -->
     <div class="hero-stats" id="stats">
         <div class="hero-stats-inner">
@@ -378,7 +402,8 @@ window.addEventListener('scroll',()=>document.getElementById('main-nav').classLi
 const canvas=document.getElementById('hero-canvas');
 const ctx=canvas.getContext('2d');
 let parts=[];
-let curMode=0; // start with balloons always
+// Fix 1: random start mode each page load
+let curMode=Math.floor(Math.random()*6);
 
 // ── Resize canvas to FILL the hero section ──
 function rsz(){
@@ -476,39 +501,46 @@ const MODES=[
         },
         rate:0, initFn:(m)=>{parts=[];for(let i=0;i<140;i++)parts.push(m.mk());}
     },
-    // 3 — UNICORN 🦄
+    // 3 — UNICORN 🦄 — actual unicorn emojis floating up with rainbow trails
     {
         name:'🦄 Vienradža mode', hint:'🎂 Kūkas mode',
         bg:'linear-gradient(160deg,#fff0fb 0%,#f0e6ff 50%,#e6f0ff 100%)',
         logo:'🦄', title:'<span style="color:#C39BD3">Sapņu</span> <span style="color:#FF6FB7">Ballītes</span>',
         blobs:['#FF9FF3','#A29BFE','#FD79A8'],
         mk:(boost)=>({
-            x:Math.random()*canvas.width, y:canvas.height+10,
-            r:4+Math.random()*7,
-            vx:(Math.random()-.5)*1.2,
-            vy:-(0.6+Math.random()*1.4)*(1+boost*.2),
-            a:.7+Math.random()*.3,
-            c:['#FF9FF3','#FFEAA7','#A29BFE','#74B9FF','#FD79A8'][Math.floor(Math.random()*5)],
-            w:Math.random()*Math.PI*2, ws:.025+Math.random()*.02,
-            trail:[], isRainbow:Math.random()>.7
+            x:Math.random()*canvas.width, y:canvas.height+20,
+            size:28+Math.random()*28,
+            vx:(Math.random()-.5)*0.9,
+            vy:-(0.55+Math.random()*1.1)*(1+boost*.2),
+            a:.85+Math.random()*.15,
+            w:Math.random()*Math.PI*2, ws:.02+Math.random()*.018,
+            trail:[], sparkTimer:0,
+            rainbowColors:['#FF6FB7','#FFD93D','#9B59B6','#1ABC9C','#FF8C42','#74B9FF']
         }),
         draw(p){
-            p.w+=p.ws; p.x+=Math.sin(p.w)*1.2+p.vx*.15; p.y+=p.vy;
-            p.trail.push({x:p.x,y:p.y,c:p.c});
-            if(p.trail.length>12)p.trail.shift();
-            // rainbow trail if special
-            const colors=p.isRainbow?['#FF6FB7','#FFD93D','#9B59B6','#1ABC9C','#FF8C42','#74B9FF']:null;
-            for(let i=0;i<p.trail.length;i++){
-                const tc=colors?colors[i%colors.length]:p.c;
-                ctx.globalAlpha=(i/p.trail.length)*p.a*.4;
-                ctx.fillStyle=tc;
-                ctx.beginPath();ctx.arc(p.trail[i].x,p.trail[i].y,p.r*(i/p.trail.length)*.9,0,Math.PI*2);ctx.fill();
+            p.w+=p.ws; p.x+=Math.sin(p.w)*1.0+p.vx*.12; p.y+=p.vy;
+            p.sparkTimer++;
+            // rainbow sparkle trail
+            if(p.sparkTimer%3===0){
+                p.trail.push({x:p.x,y:p.y+p.size*.3,life:1,c:p.rainbowColors[Math.floor(Math.random()*6)],r:3+Math.random()*5});
             }
-            ctx.globalAlpha=p.a; ctx.fillStyle=p.c;
-            ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-            ctx.globalAlpha=1; return p.y<-30;
+            p.trail=p.trail.filter(s=>{
+                s.life-=.06;
+                ctx.globalAlpha=s.life*p.a*.7;
+                ctx.fillStyle=s.c;
+                ctx.beginPath();ctx.arc(s.x,s.y,s.r*s.life,0,Math.PI*2);ctx.fill();
+                return s.life>0;
+            });
+            // draw unicorn emoji
+            ctx.globalAlpha=p.a*Math.min(1,(canvas.height-p.y+100)/canvas.height*3);
+            ctx.font=`${p.size}px serif`;
+            ctx.textAlign='center';
+            ctx.textBaseline='middle';
+            ctx.fillText('🦄',p.x,p.y);
+            ctx.globalAlpha=1;
+            return p.y<-60;
         },
-        rate:70, initFn:null
+        rate:75, initFn:null
     },
     // 4 — BIRTHDAY CAKE FIRE 🎂
     {
@@ -575,13 +607,13 @@ function drawStar(cx,cy,oR,iR,pts,a0){
 
 // ── Frame counter for rate-based spawning ──
 let frameN=0;
-let clickBoost=0; // extra spawn pressure on click
+let clickBoost=0;
 
 function loop(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const m=MODES[curMode];
     frameN++;
-    clickBoost=Math.max(0,clickBoost-.04); // decay
+    clickBoost=Math.max(0,clickBoost-.04);
     const rate=Math.max(10,m.rate-clickBoost*40);
     if(m.rate>0&&frameN%Math.round(rate)===0){
         const burst=1+Math.floor(clickBoost*3);
@@ -591,27 +623,29 @@ function loop(){
     requestAnimationFrame(loop);
 }
 
-// ── Click / touch on canvas: boost particles + fun effect ──
-function handleCanvasInteract(e){
-    e.preventDefault();
-    clickBoost=Math.min(clickBoost+0.6,3);
-    // burst of emoji at tap point
+// ── Click on HERO BACKGROUND (not on text/buttons) ──
+// Canvas is pointer-events:none — we attach to the section itself
+// but only trigger if the click target is the section/canvas/blobs (not content)
+document.getElementById('home').addEventListener('click', function(e){
+    // Ignore clicks on the hero-content div and its children
+    const content=document.querySelector('.hero-content');
+    const modeBtn=document.getElementById('mode-btn');
+    if(content.contains(e.target)||modeBtn.contains(e.target)) return;
+
+    clickBoost=Math.min(clickBoost+0.7,3);
     const rect=canvas.getBoundingClientRect();
-    const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-    const cy=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+    const cx=e.clientX, cy=e.clientY;
     const burstE=MODES[curMode].logo;
-    for(let i=0;i<6;i++){
+    for(let i=0;i<7;i++){
         const el=document.createElement('span');
         el.textContent=burstE;
-        const a=Math.random()*Math.PI*2,d=30+Math.random()*70;
+        const a=Math.random()*Math.PI*2,d=30+Math.random()*80;
         const dx=Math.cos(a)*d,dy=Math.sin(a)*d;
-        el.style.cssText=`position:fixed;left:${cx+rect.left}px;top:${cy+rect.top}px;font-size:${14+Math.random()*16}px;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:emojiBurst .9s ease-out forwards;--dx:${dx}px;--dy:${dy}px;`;
+        el.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;font-size:${14+Math.random()*18}px;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);animation:emojiBurst .9s ease-out forwards;--dx:${dx}px;--dy:${dy}px;`;
         document.body.appendChild(el);
         setTimeout(()=>el.remove(),1000);
     }
-}
-canvas.addEventListener('click',handleCanvasInteract);
-canvas.addEventListener('touchstart',handleCanvasInteract,{passive:false});
+});
 
 function applyMode(idx){
     const m=MODES[idx];
@@ -621,7 +655,11 @@ function applyMode(idx){
     document.getElementById('blob3').style.background=m.blobs[2];
     document.getElementById('logo-emoji').textContent=m.logo;
     document.getElementById('hero-ttl').innerHTML=m.title;
-    // animate the hint label to next mode name
+    // Update side mode button to show NEXT mode
+    const nextM=MODES[(idx+1)%MODES.length];
+    document.getElementById('mode-btn-emoji').textContent=nextM.logo;
+    document.getElementById('mode-btn-lbl').textContent=nextM.name.split(' ').slice(1).join(' ');
+    // Animate hint label
     const hint=document.getElementById('logo-hint');
     hint.style.opacity='0';
     hint.style.transform='translateY(6px)';
