@@ -41,7 +41,7 @@
         .nav-cta:hover{transform:translateY(-2px);}
 
         /* HERO */
-        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:80px;transition:background 1.2s ease;}
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:80px;padding-bottom:90px;transition:background 1.2s ease;}
         .hero-blobs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
         .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;transition:background 1.2s ease;}
         #hero-canvas{position:absolute;inset:0;pointer-events:all;z-index:1;cursor:pointer;width:100%;height:100%;}
@@ -71,11 +71,16 @@
         .btn-secondary{display:inline-block;padding:.9rem 2.2rem;background:white;color:var(--purple);font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;border-radius:50px;text-decoration:none;border:2px solid var(--purple-l);cursor:pointer;transition:all .3s;}
         .btn-secondary:hover{background:var(--gray);transform:translateY(-4px);border-color:var(--purple);}
 
-        /* STATS */
-        .stats{background:linear-gradient(135deg,var(--purple),var(--dark));padding:2.5rem 2rem;position:relative;z-index:1;}
-        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2rem;max-width:900px;margin:0 auto;text-align:center;}
-        .stat-num{font-family:'Fredoka',sans-serif;font-size:2.8rem;font-weight:800;color:var(--yellow);line-height:1;}
-        .stat-lbl{color:rgba(255,255,255,.8);font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-top:.3rem;}
+        /* HERO STATS BAR — pinned inside hero at bottom */
+        .hero-stats{position:absolute;bottom:0;left:0;right:0;z-index:3;background:rgba(44,22,84,.82);backdrop-filter:blur(16px);border-top:1px solid rgba(255,111,183,.25);}
+        .hero-stats-inner{display:flex;align-items:center;justify-content:center;gap:0;max-width:1100px;margin:0 auto;padding:.85rem 1.5rem;flex-wrap:wrap;gap:.2rem;}
+        .hstat{display:flex;flex-direction:column;align-items:center;padding:.3rem 1.8rem;gap:.15rem;}
+        .hstat-n{font-family:'Fredoka',sans-serif;font-size:1.7rem;font-weight:700;color:var(--yellow);line-height:1;}
+        .hstat-l{color:rgba(255,255,255,.7);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.8px;}
+        .hstat-div{width:1px;height:36px;background:rgba(255,255,255,.15);flex-shrink:0;}
+        .hstat-link{color:var(--pink-l);font-size:.8rem;font-weight:700;text-decoration:none;padding:.25rem .7rem;border-radius:20px;border:1px solid rgba(255,111,183,.35);transition:all .2s;display:block;margin:.1rem 0;}
+        .hstat-link:hover{background:rgba(255,111,183,.2);color:white;}
+        @media(max-width:768px){.hstat{padding:.3rem .9rem;}.hstat-n{font-size:1.3rem;}.hstat-div{display:none;}}
 
         /* SECTIONS */
         .sec{padding:5rem 2rem;position:relative;z-index:1;}
@@ -195,6 +200,15 @@
         @keyframes emojiBurst{0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(.3)}}
         @keyframes logoShake{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-10deg) scale(1.15)}40%{transform:rotate(10deg) scale(1.2)}60%{transform:rotate(-6deg) scale(1.12)}80%{transform:rotate(6deg) scale(1.06)}}
 
+        /* DROPDOWNS */
+        .dd-trigger{width:100%;padding:.65rem .9rem;border:2px solid var(--gray);border-radius:12px;font-family:'Nunito',sans-serif;font-size:.9rem;color:var(--dark);background:white;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:border-color .2s;user-select:none;}
+        .dd-trigger.open,.dd-trigger:hover{border-color:var(--pink);}
+        .dd-menu{position:absolute;top:calc(100% - 2px);left:0;right:0;background:white;border:2px solid var(--pink);border-top:none;border-radius:0 0 12px 12px;z-index:100;box-shadow:0 8px 25px rgba(155,89,182,.15);max-height:220px;overflow-y:auto;}
+        .dd-item{display:flex;align-items:center;gap:.75rem;padding:.65rem 1rem;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--gray);}
+        .dd-item:last-child{border-bottom:none;}
+        .dd-item:hover{background:var(--yellow-l);}
+        .dd-item.dd-sel{background:rgba(255,111,183,.08);}
+
         /* RESPONSIVE */
         @media(max-width:900px){.zina-inner{grid-template-columns:1fr;gap:2rem}.contact-grid{grid-template-columns:1fr}.bk-grid{grid-template-columns:1fr}}
         @media(max-width:768px){nav{padding:.7rem 1rem}.nav-links{display:none}.theme-grid{grid-template-columns:1fr}}
@@ -240,17 +254,24 @@
         </div>
     </div>
 
-</section>
-
-<!-- STATS -->
-<div class="stats" id="stats">
-    <div class="stats-grid">
-        <div><div class="stat-num">10+</div><div class="stat-lbl">Gadu pieredze</div></div>
-        <div><div class="stat-num">500+</div><div class="stat-lbl">Laimīgas ģimenes</div></div>
-        <div><div class="stat-num">100%</div><div class="stat-lbl">Prieks garantēts</div></div>
-        <div><div class="stat-num">⭐5.0</div><div class="stat-lbl">Vērtējums</div></div>
+    <!-- Stats pinned to bottom of hero — always visible -->
+    <div class="hero-stats" id="stats">
+        <div class="hero-stats-inner">
+            <div class="hstat"><span class="hstat-n">10+</span><span class="hstat-l">Gadu pieredze</span></div>
+            <div class="hstat-div"></div>
+            <div class="hstat"><span class="hstat-n">500+</span><span class="hstat-l">Laimīgas ģimenes</span></div>
+            <div class="hstat-div"></div>
+            <div class="hstat"><span class="hstat-n">100%</span><span class="hstat-l">Prieks garantēts</span></div>
+            <div class="hstat-div"></div>
+            <div class="hstat"><span class="hstat-n">⭐ 5.0</span><span class="hstat-l">Vērtējums</span></div>
+            <div class="hstat-div"></div>
+            <div class="hstat">
+                <a href="#testimonials" class="hstat-link">💬 Atsauksmes</a>
+                <a href="#services" class="hstat-link">🎉 Pakalpojumi</a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 
 <!-- SERVICES -->
 <section class="sec" id="services" style="background:var(--white);">
@@ -654,7 +675,7 @@ loop();
 
 <!-- REACT BOOKING WITH SUPABASE -->
 <script data-cfasync="false" type="text/babel">
-    const { useState, useEffect, useCallback } = React;
+    const { useState, useEffect, useCallback, useRef } = React;
 
     const SB_URL = 'https://ibnvqljclchzlbvfwugj.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlibnZxbGpjbGNoemxidmZ3dWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNDM4MjIsImV4cCI6MjA4NjgxOTgyMn0.oQqSvLbbDcWDpgJdDYde11sd6SX96snBIYs1FzfcCvo';
@@ -680,13 +701,66 @@ loop();
 
     function ds(yr,mo,day){ return `${yr}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`; }
 
+    // ── Dropdown component ──
+    function Dropdown({label, value, options, multi, onChange, placeholder}) {
+        const [open, setOpen] = useState(false);
+        const ref = useRef();
+        useEffect(()=>{
+            const close=(e)=>{ if(ref.current&&!ref.current.contains(e.target))setOpen(false); };
+            document.addEventListener('mousedown',close);
+            return()=>document.removeEventListener('mousedown',close);
+        },[]);
+        const toggle=(id)=>{
+            if(multi){
+                const arr=Array.isArray(value)?value:[];
+                onChange(arr.includes(id)?arr.filter(x=>x!==id):[...arr,id]);
+            } else {
+                onChange(id===value?null:id);
+                setOpen(false);
+            }
+        };
+        const selected = multi
+            ? options.filter(o=>Array.isArray(value)&&value.includes(o.id))
+            : options.find(o=>o.id===value);
+        const displayTxt = multi
+            ? (selected.length>0 ? selected.map(o=>`${o.e} ${o.n||o.name}`).join(', ') : placeholder)
+            : (selected ? `${selected.e||selected.emoji} ${selected.n||selected.name}` : placeholder);
+
+        return (
+            <div className="f-group" ref={ref} style={{position:'relative'}}>
+                <label className="f-label">{label}</label>
+                <div className={`dd-trigger${open?' open':''}`} onClick={()=>setOpen(!open)}>
+                    <span style={{opacity:selected&&(multi?selected.length>0:true)?1:.5}}>{displayTxt}</span>
+                    <span style={{marginLeft:'auto',transition:'transform .2s',transform:open?'rotate(180deg)':'none',color:'var(--purple)'}}>▾</span>
+                </div>
+                {open&&(
+                    <div className="dd-menu">
+                        {options.map(o=>{
+                            const isSel=multi?(Array.isArray(value)&&value.includes(o.id)):value===o.id;
+                            return (
+                                <div key={o.id} className={`dd-item${isSel?' dd-sel':''}`} onClick={()=>toggle(o.id)}>
+                                    <span style={{fontSize:'1.2rem'}}>{o.e||o.emoji}</span>
+                                    <div>
+                                        <div style={{fontWeight:700,fontSize:'.9rem',color:'var(--dark)'}}>{o.n||o.name}</div>
+                                        {o.spec&&<div style={{fontSize:'.75rem',color:'#aaa'}}>{o.spec}</div>}
+                                    </div>
+                                    {isSel&&<span style={{marginLeft:'auto',color:'var(--pink)',fontWeight:700}}>✓</span>}
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+            </div>
+        );
+    }
+
     function BookingApp() {
         const [cal, setCal]         = useState(new Date());
         const [bookings, setBk]     = useState([]);
         const [loading, setLoading] = useState(true);
         const [selDate, setSD]      = useState(null);
-        const [selTheme, setST]     = useState(null);
-        const [selAnim, setSA]      = useState(null);
+        const [selThemes, setST]    = useState([]);   // multi
+        const [selAnims, setSA]     = useState([]);   // multi
         const [form, setForm]       = useState({name:'',email:'',phone:'',guests:15,notes:''});
         const [submitting, setSub]  = useState(false);
         const [success, setOk]      = useState(false);
@@ -704,7 +778,6 @@ loop();
         useEffect(()=>{ loadBk(); },[loadBk]);
 
         const bookedOn = (d) => bookings.filter(b=>b.booking_date===d).map(b=>b.animator_id);
-
         const isAvail = (day) => {
             const yr=cal.getFullYear(),mo=cal.getMonth();
             const date=new Date(yr,mo,day);
@@ -729,31 +802,33 @@ loop();
         };
 
         const handleSubmit = async () => {
-            if(!selDate)  return setErr('Lūdzu izvēlieties datumu!');
-            if(!selTheme) return setErr('Lūdzu izvēlieties ballītes tēmu!');
-            if(!selAnim)  return setErr('Lūdzu izvēlieties animatoru!');
+            if(!selDate)           return setErr('Lūdzu izvēlieties datumu!');
+            if(selThemes.length===0) return setErr('Lūdzu izvēlieties vismaz vienu ballītes tēmu!');
+            if(selAnims.length===0)  return setErr('Lūdzu izvēlieties vismaz vienu animatoru!');
             if(!form.name||!form.email||!form.phone) return setErr('Lūdzu aizpildiet visus * laukus!');
             setSub(true); setErr(null);
             try {
-                const {error:dbErr} = await sb.from('party_bookings').insert([{
+                // insert one row per animator selected
+                const rows = selAnims.map(aid=>({
                     booking_date: selDate,
-                    animator_id: selAnim,
+                    animator_id: aid,
                     client_name: form.name,
                     client_email: form.email,
                     client_phone: form.phone,
-                    party_theme: selTheme,
+                    party_theme: selThemes.join(','),
                     guest_count: parseInt(form.guests),
                     notes: form.notes
-                }]);
+                }));
+                const {error:dbErr} = await sb.from('party_bookings').insert(rows);
                 if(dbErr) throw dbErr;
-                const anim = ANIMATORS.find(a=>a.id===selAnim);
-                const theme = THEMES.find(t=>t.id===selTheme);
                 try {
+                    const themeNames = selThemes.map(tid=>THEMES.find(t=>t.id===tid)?.n).join(', ');
+                    const animNames  = selAnims.map(aid=>ANIMATORS.find(a=>a.id===aid)?.name).join(', ');
                     await emailjs.send('service_d52bopv','template_azl3ud8',{
                         to_email: form.email, client_name: form.name,
                         client_email: form.email, client_phone: form.phone,
-                        booking_date: selDate, host_name: anim?.name||'',
-                        event_type: theme?.n||selTheme,
+                        booking_date: selDate, host_name: animNames,
+                        event_type: themeNames,
                         guest_count: form.guests, notes: form.notes||'—'
                     });
                 } catch(emailErr){ console.warn('Email warn:',emailErr); }
@@ -773,17 +848,18 @@ loop();
         );
 
         if(success) {
-            const anim=ANIMATORS.find(a=>a.id===selAnim);
-            const theme=THEMES.find(t=>t.id===selTheme);
+            const themeNames = selThemes.map(tid=>THEMES.find(t=>t.id===tid)?.n).join(', ');
+            const animNames  = selAnims.map(aid=>`${ANIMATORS.find(a=>a.id===aid)?.emoji} ${ANIMATORS.find(a=>a.id===aid)?.name}`).join(', ');
             return (
                 <div className="ok-box">
                     <div style={{fontSize:'4rem',marginBottom:'.8rem'}}>🎉</div>
                     <h2>Paldies, {form.name}!</h2>
                     <p style={{fontSize:'1.05rem',marginBottom:'1rem',opacity:.9}}>Rezervācija saglabāta! Sazināsimies ar Jums tuvākajā laikā.</p>
-                    <p style={{opacity:.85,marginBottom:'.5rem'}}>📅 {selDate} · {theme?.e} {theme?.n} · {anim?.emoji} {anim?.name}</p>
+                    <p style={{opacity:.85,marginBottom:'.5rem'}}>📅 {selDate} · {themeNames}</p>
+                    <p style={{opacity:.8,marginBottom:'1rem'}}>{animNames}</p>
                     <p style={{fontSize:'.85rem',opacity:.7,marginBottom:'2rem'}}>Apstiprinājums nosūtīts uz: {form.email}</p>
                     <button className="btn-secondary" style={{background:'rgba(255,255,255,.2)',border:'2px solid rgba(255,255,255,.4)',color:'white'}}
-                        onClick={()=>{setOk(false);setSD(null);setST(null);setSA(null);setForm({name:'',email:'',phone:'',guests:15,notes:''});}}>
+                        onClick={()=>{setOk(false);setSD(null);setST([]);setSA([]);setForm({name:'',email:'',phone:'',guests:15,notes:''});}}>
                         Jauna rezervācija
                     </button>
                 </div>
@@ -795,99 +871,83 @@ loop();
 
         return (
             <div className="bk-grid">
-                <div style={{display:'flex',flexDirection:'column',gap:'1.5rem'}}>
-
-                    {/* Calendar */}
-                    <div className="b-panel">
-                        <div className="panel-ttl">📅 Izvēlies datumu</div>
-                        <div className="cal-hdr">
-                            <button className="cal-btn" onClick={()=>{const d=new Date(cal);d.setMonth(d.getMonth()-1);setCal(d);}}>‹</button>
-                            <div className="cal-month">{cal.toLocaleDateString('lv-LV',{month:'long',year:'numeric'})}</div>
-                            <button className="cal-btn" onClick={()=>{const d=new Date(cal);d.setMonth(d.getMonth()+1);setCal(d);}}>›</button>
-                        </div>
-                        <div className="cal-grid">
-                            {['Pr','Ot','Tr','Ce','Pk','Se','Sv'].map(d=><div key={d} className="cal-hd">{d}</div>)}
-                            {Array(start).fill(null).map((_,i)=><div key={`e${i}`} className="cal-day empty"></div>)}
-                            {Array(total).fill(null).map((_,i)=>{
-                                const day=i+1;
-                                const date=new Date(yr,mo,day);
-                                const today=new Date();today.setHours(0,0,0,0);
-                                const isPast=date<today;
-                                const d=ds(yr,mo,day);
-                                const avail=isAvail(day);
-                                const full=isFull(day);
-                                const isSel=selDate===d;
-                                const bkd=bookedOn(d);
-                                let cls='cal-day';
-                                if(isPast)cls+=' past';
-                                else if(isSel)cls+=' sel';
-                                else if(avail)cls+=' avail';
-                                else if(full)cls+=' full';
-                                else cls+=' disabled';
-                                return (
-                                    <div key={day} className={cls} onClick={()=>{if(!isPast&&avail)setSD(d);}}>
-                                        <div>{day}</div>
-                                        {!isPast&&avail&&(
-                                            <div className="cal-dots">
-                                                {ANIMATORS.slice(0,3).map(a=>(
-                                                    <div key={a.id} className={`cal-dot${bkd.includes(a.id)?' bkd':''}`}></div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
-                        </div>
-                        <div className="legend">
-                            <div className="leg-item"><div className="leg-dot" style={{background:'var(--yellow)',border:'2px solid var(--yellow)'}}></div>Pieejams</div>
-                            <div className="leg-item"><div className="leg-dot" style={{background:'rgba(255,111,183,.2)',border:'2px solid var(--pink-l)'}}></div>Pilns</div>
-                            <div className="leg-item"><div className="leg-dot" style={{background:'var(--pink)'}}></div>Izvēlēts</div>
-                        </div>
+                {/* LEFT — calendar only */}
+                <div className="b-panel">
+                    <div className="panel-ttl">📅 Izvēlies datumu</div>
+                    <div className="cal-hdr">
+                        <button className="cal-btn" onClick={()=>{const d=new Date(cal);d.setMonth(d.getMonth()-1);setCal(d);}}>‹</button>
+                        <div className="cal-month">{cal.toLocaleDateString('lv-LV',{month:'long',year:'numeric'})}</div>
+                        <button className="cal-btn" onClick={()=>{const d=new Date(cal);d.setMonth(d.getMonth()+1);setCal(d);}}>›</button>
                     </div>
-
-                    {/* Theme */}
-                    <div className="b-panel">
-                        <div className="panel-ttl">🎨 Ballītes tēma</div>
-                        <div className="theme-grid">
-                            {THEMES.map(t=>(
-                                <div key={t.id} className={`theme-opt${selTheme===t.id?' sel':''}`} onClick={()=>setST(t.id)}>
-                                    {t.e} {t.n}
+                    <div className="cal-grid">
+                        {['Pr','Ot','Tr','Ce','Pk','Se','Sv'].map(d=><div key={d} className="cal-hd">{d}</div>)}
+                        {Array(start).fill(null).map((_,i)=><div key={`e${i}`} className="cal-day empty"></div>)}
+                        {Array(total).fill(null).map((_,i)=>{
+                            const day=i+1;
+                            const date=new Date(yr,mo,day);
+                            const today=new Date();today.setHours(0,0,0,0);
+                            const isPast=date<today;
+                            const d=ds(yr,mo,day);
+                            const avail=isAvail(day);
+                            const full=isFull(day);
+                            const isSel=selDate===d;
+                            const bkd=bookedOn(d);
+                            let cls='cal-day';
+                            if(isPast)cls+=' past';
+                            else if(isSel)cls+=' sel';
+                            else if(avail)cls+=' avail';
+                            else if(full)cls+=' full';
+                            else cls+=' disabled';
+                            return (
+                                <div key={day} className={cls} onClick={()=>{if(!isPast&&avail)setSD(d);}}>
+                                    <div>{day}</div>
+                                    {!isPast&&avail&&(
+                                        <div className="cal-dots">
+                                            {ANIMATORS.slice(0,3).map(a=>(
+                                                <div key={a.id} className={`cal-dot${bkd.includes(a.id)?' bkd':''}`}></div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
-
-                    {/* Animator */}
-                    <div className="b-panel">
-                        <div className="panel-ttl">🎭 Animators</div>
-                        {ANIMATORS.map(a=>(
-                            <div key={a.id} className={`host-opt${selAnim===a.id?' sel':''}`} onClick={()=>setSA(a.id)}>
-                                <div className="h-ava">{a.emoji}</div>
-                                <div><div className="h-name">{a.name}</div><div className="h-spec">{a.spec}</div></div>
-                                {selAnim===a.id&&<span style={{marginLeft:'auto',color:'var(--pink)',fontSize:'1.2rem'}}>✓</span>}
-                            </div>
-                        ))}
+                    <div className="legend">
+                        <div className="leg-item"><div className="leg-dot" style={{background:'var(--yellow)',border:'2px solid var(--yellow)'}}></div>Pieejams</div>
+                        <div className="leg-item"><div className="leg-dot" style={{background:'rgba(255,111,183,.2)',border:'2px solid var(--pink-l)'}}></div>Pilns</div>
+                        <div className="leg-item"><div className="leg-dot" style={{background:'var(--pink)'}}></div>Izvēlēts</div>
                     </div>
                 </div>
 
-                {/* Form */}
+                {/* RIGHT — form with dropdowns */}
                 <div className="b-panel">
-                    <div className="panel-ttl">📝 Kontaktinfo</div>
-                    {!selDate&&<div className="info-chip">👆 Sāc ar datuma izvēli kreisajā pusē!</div>}
-                    {selDate&&(
-                        <div className="sel-chip">
-                            📅 {selDate}
-                            {selTheme&&` · ${THEMES.find(t=>t.id===selTheme)?.e} ${THEMES.find(t=>t.id===selTheme)?.n}`}
-                            {selAnim&&` · ${ANIMATORS.find(a=>a.id===selAnim)?.name}`}
-                        </div>
-                    )}
+                    <div className="panel-ttl">📝 Pieteikuma forma</div>
+                    {!selDate&&<div className="info-chip">👈 Sāc ar datuma izvēli kreisajā pusē!</div>}
+                    {selDate&&<div className="sel-chip">📅 {selDate}</div>}
                     {error&&<div className="err-box">❌ {error}</div>}
-                    <div className="f-group"><label className="f-label">Vārds *</label><input type="text" className="f-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Jūsu vārds..."/></div>
+
+                    <div className="f-group"><label className="f-label">Vārds / Uzvārds *</label><input type="text" className="f-input" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="Jūsu vārds..."/></div>
                     <div className="f-group"><label className="f-label">E-pasts *</label><input type="email" className="f-input" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="epasts@gmail.com"/></div>
                     <div className="f-group"><label className="f-label">Telefons *</label><input type="tel" className="f-input" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} placeholder="+371 2XXXXXXX"/></div>
                     <div className="f-group"><label className="f-label">Bērnu skaits</label><input type="number" className="f-input" value={form.guests} min="1" max="200" onChange={e=>setForm({...form,guests:e.target.value})}/></div>
+
+                    <Dropdown
+                        label="🎨 Ballītes tēma (var izvēlēties vairākas) *"
+                        value={selThemes} multi={true}
+                        options={THEMES}
+                        onChange={setST}
+                        placeholder="Izvēlies tēmu..."
+                    />
+                    <Dropdown
+                        label="🎭 Animators (var izvēlēties vairākus) *"
+                        value={selAnims} multi={true}
+                        options={ANIMATORS}
+                        onChange={setSA}
+                        placeholder="Izvēlies animatoru..."
+                    />
+
                     <div className="f-group"><label className="f-label">Papildu vēlmes</label><textarea className="f-area" value={form.notes} onChange={e=>setForm({...form,notes:e.target.value})} placeholder="Bērna vecums, alerģijas, īpašas vēlmes..."></textarea></div>
-                    <button className="sub-btn" onClick={handleSubmit} disabled={submitting||!selDate||!selTheme||!selAnim}>
+                    <button className="sub-btn" onClick={handleSubmit} disabled={submitting||!selDate||selThemes.length===0||selAnims.length===0}>
                         {submitting?<><span className="spin"></span>Apstrādā...</>:'🎈 Nosūtīt rezervāciju'}
                     </button>
                     <p style={{fontSize:'.78rem',color:'#bbb',textAlign:'center',marginTop:'.7rem'}}>Sazināsimies 24h laikā · +371 24551994</p>
