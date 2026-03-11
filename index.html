@@ -41,42 +41,52 @@
         .nav-cta:hover{transform:translateY(-2px);}
 
         /* HERO */
-        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:80px;padding-bottom:90px;transition:background 1.2s ease;}
+        /* FIX 3: reduced padding-bottom so stats bar fits in first screen */
+        .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;padding-top:80px;padding-bottom:70px;transition:background 1.2s ease;}
         .hero-blobs{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
         .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.28;transition:background 1.2s ease;}
-        /* Canvas behind content but catches clicks only in empty areas via JS */
         #hero-canvas{position:absolute;inset:0;pointer-events:none;z-index:1;width:100%;height:100%;}
-        /* Hero content sits ABOVE canvas, text never obscured */
-        .hero-content{position:relative;z-index:4;text-align:center;padding:2rem;max-width:820px;pointer-events:none;}
-        .hero-content a,.hero-content button,.logo-wrap{pointer-events:all;}
-        /* Mode switcher — floats right side, not dead center */
+        /* Hero content sits ABOVE canvas */
+        .hero-content{position:relative;z-index:4;text-align:center;padding:1rem 2rem;max-width:820px;pointer-events:none;}
+        .hero-content a,.hero-content button,.logo-wrap,.mode-btn{pointer-events:all;}
+
+        /* FIX 1 & 2: Mode switcher moved INSIDE hero-content, displayed inline below logo */
+        /* Removed the absolute-positioned duplicate. Now it's inline flow. */
         .mode-btn{
-            position:absolute; right:5%; top:50%; transform:translateY(-50%);
-            z-index:5; cursor:pointer;
-            background:rgba(255,255,255,.18); backdrop-filter:blur(10px);
-            border:2px solid rgba(255,255,255,.4); border-radius:20px;
-            padding:.7rem 1rem; display:flex; flex-direction:column;
-            align-items:center; gap:.3rem; transition:all .3s;
+            display:inline-flex;
+            flex-direction:row;
+            align-items:center;
+            gap:.5rem;
+            z-index:5;
+            cursor:pointer;
+            background:rgba(255,255,255,.22);
+            backdrop-filter:blur(10px);
+            border:2px solid rgba(255,255,255,.5);
+            border-radius:50px;
+            padding:.45rem 1.1rem;
+            transition:all .3s;
             box-shadow:0 4px 20px rgba(155,89,182,.2);
+            margin:0 auto .8rem;
         }
-        .mode-btn:hover{background:rgba(255,255,255,.32); transform:translateY(-50%) scale(1.05);}
-        .mode-btn-emoji{font-size:1.8rem; display:block; line-height:1;}
-        .mode-btn-lbl{font-family:'Fredoka',sans-serif; font-size:.7rem; font-weight:700;
-            color:var(--dark); letter-spacing:.5px; text-align:center; max-width:70px; line-height:1.2;}
-        @media(max-width:768px){.mode-btn{right:2%;padding:.5rem .7rem;}.mode-btn-emoji{font-size:1.4rem;}}
-        .hero-badge{display:inline-block;background:var(--yellow);color:var(--dark);font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;padding:.4rem 1.2rem;border-radius:50px;margin-bottom:1.2rem;box-shadow:0 4px 15px rgba(255,217,61,.4);letter-spacing:1px;animation:popIn .6s ease both;}
+        .mode-btn:hover{background:rgba(255,255,255,.38); transform:scale(1.05);}
+        .mode-btn-emoji{font-size:1.2rem; display:block; line-height:1;}
+        .mode-btn-lbl{font-family:'Fredoka',sans-serif; font-size:.75rem; font-weight:700;
+            color:var(--dark); letter-spacing:.3px; text-align:center; line-height:1.2;}
+        @media(max-width:768px){.mode-btn{padding:.4rem .8rem;}.mode-btn-emoji{font-size:1rem;}}
+
+        .hero-badge{display:inline-block;background:var(--yellow);color:var(--dark);font-family:'Fredoka',sans-serif;font-weight:700;font-size:.85rem;padding:.4rem 1.2rem;border-radius:50px;margin-bottom:.8rem;box-shadow:0 4px 15px rgba(255,217,61,.4);letter-spacing:1px;animation:popIn .6s ease both;}
         @keyframes popIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
-        .logo-wrap{display:inline-block;cursor:pointer;margin-bottom:.8rem;animation:floatLogo 4s ease-in-out infinite;position:relative;}
+        .logo-wrap{display:inline-block;cursor:pointer;margin-bottom:.4rem;animation:floatLogo 4s ease-in-out infinite;position:relative;}
         @keyframes floatLogo{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
-        .logo-emoji{font-size:clamp(5rem,12vw,8.5rem);display:block;filter:drop-shadow(0 10px 30px rgba(255,111,183,.4));transition:transform .2s;user-select:none;}
+        .logo-emoji{font-size:clamp(4rem,9vw,7rem);display:block;filter:drop-shadow(0 10px 30px rgba(255,111,183,.4));transition:transform .2s;user-select:none;}
         .logo-wrap:hover .logo-emoji{transform:scale(1.08);}
-        .logo-hint{font-size:.95rem;color:var(--purple);font-weight:700;letter-spacing:.3px;margin-top:.4rem;font-family:'Fredoka',sans-serif;animation:hintPulse 2s ease-in-out infinite;display:block;}
+        .logo-hint{font-size:.85rem;color:var(--purple);font-weight:700;letter-spacing:.3px;margin-top:.2rem;font-family:'Fredoka',sans-serif;animation:hintPulse 2s ease-in-out infinite;display:block;}
         @keyframes hintPulse{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.06);}}
-        .hero h1{font-family:'Fredoka',sans-serif;font-size:clamp(2.8rem,8vw,5.5rem);font-weight:800;line-height:1.1;margin-bottom:.8rem;animation:slideUp .8s ease .2s both;}
+        .hero h1{font-family:'Fredoka',sans-serif;font-size:clamp(2.4rem,7vw,5rem);font-weight:800;line-height:1.1;margin-bottom:.5rem;animation:slideUp .8s ease .2s both;}
         @keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-        .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:var(--purple);margin-bottom:.6rem;font-weight:600;animation:slideUp .8s ease .35s both;}
-        .hero-desc{font-size:clamp(.88rem,1.5vw,1rem);color:#5a4070;max-width:580px;margin:0 auto 1.5rem;line-height:1.7;animation:slideUp .8s ease .5s both;}
-        .hero-stars{font-size:1.1rem;margin-bottom:1.5rem;animation:slideUp .8s ease .6s both;}
+        .hero-sub{font-size:clamp(.95rem,2vw,1.15rem);color:var(--purple);margin-bottom:.4rem;font-weight:600;animation:slideUp .8s ease .35s both;}
+        .hero-desc{font-size:clamp(.82rem,1.4vw,.95rem);color:#5a4070;max-width:580px;margin:0 auto 1rem;line-height:1.65;animation:slideUp .8s ease .5s both;}
+        .hero-stars{font-size:1rem;margin-bottom:1rem;animation:slideUp .8s ease .6s both;}
         .hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:slideUp .8s ease .7s both;}
         .hero-scroll{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-size:1.3rem;cursor:pointer;z-index:3;background:white;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(155,89,182,.2);animation:bounce 2s infinite;}
         @keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
@@ -256,11 +266,18 @@
         <div class="blob" id="blob2" style="width:400px;height:400px;bottom:-50px;left:-100px;"></div>
         <div class="blob" id="blob3" style="width:300px;height:300px;top:45%;left:40%;"></div>
     </div>
+
+    <!-- FIX: mode-btn is now INSIDE hero-content, replacing the floating logo click hint -->
+    <!-- FIX: removed the old standalone .mode-btn div that was outside hero-content (the duplicate) -->
     <div class="hero-content">
         <div class="hero-badge">⭐ JAU 10 GADUS LATVIJĀ • SINCE 2015 ⭐</div>
         <div class="logo-wrap" id="logo-wrap" onclick="nextMode()">
             <span class="logo-emoji" id="logo-emoji">🎈</span>
-            <div class="logo-hint" id="logo-hint">🎈 Ieslēdz ballīti!</div>
+        </div>
+        <!-- FIX 2: mode-btn now sits inline here, where the purple arrow pointed -->
+        <div class="mode-btn" id="mode-btn" onclick="nextMode()">
+            <span class="mode-btn-emoji" id="mode-btn-emoji">🎊</span>
+            <span class="mode-btn-lbl" id="mode-btn-lbl">Nākamais režīms</span>
         </div>
         <h1 id="hero-ttl"><span style="color:var(--pink)">Sapņu</span> <span style="color:var(--purple)">Ballītes</span></h1>
         <p class="hero-sub">Bērnu ballītes & Zina Nezina mājvieta</p>
@@ -270,12 +287,6 @@
             <a href="#booking" class="btn-primary">🎈 Rezervēt ballīti</a>
             <a href="#services" class="btn-secondary">Uzzināt vairāk ↓</a>
         </div>
-    </div>
-
-    <!-- Mode switcher button — right side, not center -->
-    <div class="mode-btn" id="mode-btn" onclick="nextMode()">
-        <span class="mode-btn-emoji" id="mode-btn-emoji">🎊</span>
-        <span class="mode-btn-lbl" id="mode-btn-lbl">Nākamais režīms</span>
     </div>
 
     <!-- Stats pinned to bottom of hero — always visible -->
@@ -402,10 +413,8 @@ window.addEventListener('scroll',()=>document.getElementById('main-nav').classLi
 const canvas=document.getElementById('hero-canvas');
 const ctx=canvas.getContext('2d');
 let parts=[];
-// Fix 1: random start mode each page load
 let curMode=Math.floor(Math.random()*6);
 
-// ── Resize canvas to FILL the hero section ──
 function rsz(){
     const hero=document.getElementById('home');
     canvas.width=hero.offsetWidth;
@@ -414,7 +423,6 @@ function rsz(){
 window.addEventListener('resize',()=>{rsz();if(MODES[curMode].initFn)MODES[curMode].initFn(MODES[curMode]);});
 rsz();
 
-// ── Mode definitions — all speeds halved for smoothness ──
 const MODES=[
     // 0 — BALLOONS 🎈
     {
@@ -436,11 +444,9 @@ const MODES=[
             ctx.globalAlpha=p.a*Math.max(0,Math.min(1,p.y/canvas.height*2));
             ctx.fillStyle=p.c;
             ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*.82,p.r,0,0,Math.PI*2); ctx.fill();
-            // shine
             ctx.fillStyle='rgba(255,255,255,.22)';
             ctx.beginPath(); ctx.ellipse(p.x-p.r*.25,p.y-p.r*.3,p.r*.28,p.r*.2,-.3,0,Math.PI*2); ctx.fill();
             ctx.strokeStyle='rgba(0,0,0,.08)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*.82,p.r,0,0,Math.PI*2); ctx.stroke();
-            // string
             ctx.beginPath(); ctx.moveTo(p.x,p.y+p.r); ctx.quadraticCurveTo(p.x+Math.sin(p.w)*5,p.y+p.r+10,p.x,p.y+p.r+20);
             ctx.strokeStyle='rgba(0,0,0,.2)'; ctx.lineWidth=1; ctx.stroke();
             ctx.globalAlpha=1;
@@ -501,7 +507,7 @@ const MODES=[
         },
         rate:0, initFn:(m)=>{parts=[];for(let i=0;i<140;i++)parts.push(m.mk());}
     },
-    // 3 — UNICORN 🦄 — actual unicorn emojis floating up with rainbow trails
+    // 3 — UNICORN 🦄
     {
         name:'🦄 Vienradža mode', hint:'🎂 Kūkas mode',
         bg:'linear-gradient(160deg,#fff0fb 0%,#f0e6ff 50%,#e6f0ff 100%)',
@@ -520,7 +526,6 @@ const MODES=[
         draw(p){
             p.w+=p.ws; p.x+=Math.sin(p.w)*1.0+p.vx*.12; p.y+=p.vy;
             p.sparkTimer++;
-            // rainbow sparkle trail
             if(p.sparkTimer%3===0){
                 p.trail.push({x:p.x,y:p.y+p.size*.3,life:1,c:p.rainbowColors[Math.floor(Math.random()*6)],r:3+Math.random()*5});
             }
@@ -531,7 +536,6 @@ const MODES=[
                 ctx.beginPath();ctx.arc(s.x,s.y,s.r*s.life,0,Math.PI*2);ctx.fill();
                 return s.life>0;
             });
-            // draw unicorn emoji
             ctx.globalAlpha=p.a*Math.min(1,(canvas.height-p.y+100)/canvas.height*3);
             ctx.font=`${p.size}px serif`;
             ctx.textAlign='center';
@@ -605,7 +609,6 @@ function drawStar(cx,cy,oR,iR,pts,a0){
     ctx.closePath();ctx.fill();
 }
 
-// ── Frame counter for rate-based spawning ──
 let frameN=0;
 let clickBoost=0;
 
@@ -623,17 +626,11 @@ function loop(){
     requestAnimationFrame(loop);
 }
 
-// ── Click on HERO BACKGROUND (not on text/buttons) ──
-// Canvas is pointer-events:none — we attach to the section itself
-// but only trigger if the click target is the section/canvas/blobs (not content)
 document.getElementById('home').addEventListener('click', function(e){
-    // Ignore clicks on the hero-content div and its children
     const content=document.querySelector('.hero-content');
-    const modeBtn=document.getElementById('mode-btn');
-    if(content.contains(e.target)||modeBtn.contains(e.target)) return;
+    if(content.contains(e.target)) return;
 
     clickBoost=Math.min(clickBoost+0.7,3);
-    const rect=canvas.getBoundingClientRect();
     const cx=e.clientX, cy=e.clientY;
     const burstE=MODES[curMode].logo;
     for(let i=0;i<7;i++){
@@ -655,20 +652,9 @@ function applyMode(idx){
     document.getElementById('blob3').style.background=m.blobs[2];
     document.getElementById('logo-emoji').textContent=m.logo;
     document.getElementById('hero-ttl').innerHTML=m.title;
-    // Update side mode button to show NEXT mode
     const nextM=MODES[(idx+1)%MODES.length];
     document.getElementById('mode-btn-emoji').textContent=nextM.logo;
     document.getElementById('mode-btn-lbl').textContent=nextM.name.split(' ').slice(1).join(' ');
-    // Animate hint label
-    const hint=document.getElementById('logo-hint');
-    hint.style.opacity='0';
-    hint.style.transform='translateY(6px)';
-    setTimeout(()=>{
-        hint.textContent=m.hint;
-        hint.style.transition='opacity .5s,transform .5s';
-        hint.style.opacity='1';
-        hint.style.transform='translateY(0)';
-    },200);
     parts=[];
     if(m.initFn)m.initFn(m);
 }
@@ -739,7 +725,6 @@ loop();
 
     function ds(yr,mo,day){ return `${yr}-${String(mo+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`; }
 
-    // ── Dropdown component ──
     function Dropdown({label, value, options, multi, onChange, placeholder}) {
         const [open, setOpen] = useState(false);
         const ref = useRef();
@@ -797,8 +782,8 @@ loop();
         const [bookings, setBk]     = useState([]);
         const [loading, setLoading] = useState(true);
         const [selDate, setSD]      = useState(null);
-        const [selThemes, setST]    = useState([]);   // multi
-        const [selAnims, setSA]     = useState([]);   // multi
+        const [selThemes, setST]    = useState([]);
+        const [selAnims, setSA]     = useState([]);
         const [form, setForm]       = useState({name:'',email:'',phone:'',guests:15,notes:''});
         const [submitting, setSub]  = useState(false);
         const [success, setOk]      = useState(false);
@@ -846,7 +831,6 @@ loop();
             if(!form.name||!form.email||!form.phone) return setErr('Lūdzu aizpildiet visus * laukus!');
             setSub(true); setErr(null);
             try {
-                // insert one row per animator selected
                 const rows = selAnims.map(aid=>({
                     booking_date: selDate,
                     animator_id: aid,
@@ -909,7 +893,6 @@ loop();
 
         return (
             <div className="bk-grid">
-                {/* LEFT — calendar only */}
                 <div className="b-panel">
                     <div className="panel-ttl">📅 Izvēlies datumu</div>
                     <div className="cal-hdr">
@@ -957,7 +940,6 @@ loop();
                     </div>
                 </div>
 
-                {/* RIGHT — form with dropdowns */}
                 <div className="b-panel">
                     <div className="panel-ttl">📝 Pieteikuma forma</div>
                     {!selDate&&<div className="info-chip">👈 Sāc ar datuma izvēli kreisajā pusē!</div>}
